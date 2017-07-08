@@ -1,0 +1,13 @@
+---
+- hosts: admin_node
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - name: 'enable https-based apt installs'
+      apt: name=apt-transport-https update_cache=yes
+    - name: 'add ceph apt-key'
+      shell: wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add -
+    - name: 'add ceph source'
+      shell: echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | tee /etc/apt/sources.list.d/ceph.list
+    - name: 'install ceph-deploy'
+      shell: DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -yq ntp ceph-deploy

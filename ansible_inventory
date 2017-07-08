@@ -1,0 +1,7 @@
+[admin_node]
+node0
+
+[all_ceph_nodes]
+node0
+node1
+node2
