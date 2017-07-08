@@ -30,7 +30,16 @@ Vagrant.configure("2") do |config|
     config.cache.scope = :box
   end
 
-  # Admin node
+  # Other ceph servers
+  (1..SERVER_COUNT-1).each do |i|
+    config.vm.define "node#{i}" do |server|
+      server.vm.hostname = "node#{i}"
+      server.vm.network "private_network", ip: "172.16.0.#{10+i}"
+    end
+  end
+
+  # Admin node - must come after the other servers
+  # because refers to them in its provisioning process
   config.vm.define "node0" do |admin|
       admin.vm.hostname = "node0"
       admin.vm.network "private_network", ip: "172.16.0.10"
@@ -44,14 +53,6 @@ Vagrant.configure("2") do |config|
       admin.vm.provision "shell", inline: "sed -i -e 's/#host_key_checking/host_key_checking/' /etc/ansible/ansible.cfg"
 
       # Run ansible
-      admin.vm.provision "shell", inline: "cd /vagrant && ansible-playbook -e 'host_key_checking=False' -i ansible_inventory playbook.yml"
-  end
-
-  # Other ceph servers
-  (1..SERVER_COUNT-1).each do |i|
-    config.vm.define "node#{i}" do |server|
-      server.vm.hostname = "node#{i}"
-      server.vm.network "private_network", ip: "172.16.0.#{10+i}"
-    end
+      admin.vm.provision "shell", inline: "cd /vagrant && ansible-playbook -i ansible_inventory playbook.yml"
   end
 end

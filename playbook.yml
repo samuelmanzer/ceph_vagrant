@@ -11,3 +11,6 @@
       shell: echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | tee /etc/apt/sources.list.d/ceph.list
     - name: 'install ceph-deploy'
       shell: DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -yq ntp ceph-deploy
+    - name: 'initialize ceph cluster'
+      chdir: /vagrant
+      command: ceph-deploy new {{ " ".join(groups['all_ceph_nodes']) }}
