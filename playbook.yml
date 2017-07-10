@@ -11,14 +11,21 @@
   remote_user: vagrant
   become: yes
   tasks:
-    - name: 'enable https-based apt installs'
+    - name: 'enable https-based apt installs + update cache'
       apt: name=apt-transport-https update_cache=yes
+    - name: 'install ntp'
+      apt: name=ntp
     - name: 'add ceph apt-key'
-      shell: wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add -
-    - name: 'add ceph source'
-      shell: echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | tee /etc/apt/sources.list.d/ceph.list
+      apt_key:
+        url: "https://download.ceph.com/keys/release.asc"
+        state: present
+      #shell: wget -q -O-  | apt-key add -
+    - name: 'add ceph apt repo'
+      apt_repository:
+        repo: deb https://download.ceph.com/debian-jewel/ jessie main
+        state: present
     - name: 'install ceph-deploy'
-      shell: DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -yq ntp ceph-deploy
+      apt: name=ceph-deploy
 
 # Admin 'vagrant' user tasks - these need SSH agent forwarding
 - hosts: admin_node
