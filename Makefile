@@ -1,6 +1,9 @@
 .PHONY: up load provision clean reload install
 
 up:
+	mkdir -p workspace
+	cp cluster_hosts workspace
+	cp run_ansible.sh ansible_inventory playbook.yml workspace
 	ssh-add ~/.vagrant.d/insecure_private_key
 	vagrant up --provider=libvirt
 

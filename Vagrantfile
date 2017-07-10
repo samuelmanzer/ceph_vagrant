@@ -11,6 +11,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "debian/#{CODENAME}64"
 
+  # the default sync of '.' is so annoying for git
+  config.vm.synced_folder "workspace", "/vagrant", type: "nfs"
+
   # Needed for ansible/ceph-deploy
   config.ssh.forward_agent = true
   config.ssh.insert_key = false
