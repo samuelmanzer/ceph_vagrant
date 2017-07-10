@@ -15,9 +15,6 @@ Vagrant.configure("2") do |config|
   config.ssh.forward_agent = true
   config.ssh.insert_key = false
 
-  # simplify; don't want to deal with NFS bidirectional sync
-  config.vm.synced_folder "./", "/vagrant", type: "rsync"
-
   # Use KVM for hardware accelerated virtualization
   config.vm.provider :libvirt do |libvirt|
     libvirt.driver = "kvm"
@@ -25,7 +22,11 @@ Vagrant.configure("2") do |config|
 
   # Cache APT packages and such - make Ceph install faster
   if Vagrant.has_plugin?("vagrant-cachier")
-    config.cache.scope = :box
+     config.cache.scope = :box
+     config.cache.synced_folder_opts = {
+        type: :nfs,
+        mount_options: ['rw', 'vers=4', 'tcp', 'nolock']
+     }
   end
 
   # Admin node

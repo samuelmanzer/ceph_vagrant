@@ -1,13 +1,14 @@
 ---
-- hosts: all_ceph_nodes
+- name: SSH host key verification
+  hosts: all_ceph_nodes
   remote_user: vagrant
   become: yes
   tasks:
-    - name: 'pre-emptive host key verification for SSH'
+    - name: pre-emptive host key verification for SSH
       shell: ssh-keyscan {{ " ".join(groups['all_ceph_nodes']) }} >> /etc/ssh/ssh_known_hosts
 
-# Admin 'root' user tasks
-- hosts: admin_node
+- name: admin root user tasks
+  hosts: admin_node
   remote_user: vagrant
   become: yes
   tasks:
@@ -27,8 +28,8 @@
     - name: 'install ceph-deploy'
       apt: name=ceph-deploy
 
-# Admin 'vagrant' user tasks - these need SSH agent forwarding
-- hosts: admin_node
+- name:  Admin vagrant user tasks - these need SSH agent forwarding
+  hosts: admin_node
   remote_user: vagrant
   become: no
   tasks:
