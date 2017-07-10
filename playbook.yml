@@ -1,4 +1,12 @@
 ---
+- hosts: all_ceph_nodes
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - name: 'pre-emptive host key verification for SSH'
+      shell: ssh-keyscan {{ " ".join(groups['all_ceph_nodes']) }} >> /etc/ssh/ssh_known_hosts
+
+# Admin 'root' user tasks
 - hosts: admin_node
   remote_user: vagrant
   become: yes
@@ -11,6 +19,13 @@
       shell: echo deb https://download.ceph.com/debian-jewel/ $(lsb_release -sc) main | tee /etc/apt/sources.list.d/ceph.list
     - name: 'install ceph-deploy'
       shell: DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -yq ntp ceph-deploy
+
+# Admin 'vagrant' user tasks - these need SSH agent forwarding
+- hosts: admin_node
+  remote_user: vagrant
+  become: no
+  tasks:
     - name: 'initialize ceph cluster'
-      chdir: /vagrant
       command: ceph-deploy new {{ " ".join(groups['all_ceph_nodes']) }}
+      args:
+        chdir: /vagrant
