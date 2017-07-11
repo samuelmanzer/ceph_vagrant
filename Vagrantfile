@@ -6,6 +6,7 @@
 
 CODENAME = "jessie"
 SERVER_COUNT = 4
+DEFAULT_GATEWAY="172.16.0.1"
 
 Vagrant.configure("2") do |config|
 
@@ -32,7 +33,8 @@ Vagrant.configure("2") do |config|
       admin.vm.provision "shell", inline: "cat /vagrant/cluster_hosts >> /etc/hosts"
 
       # Install ansible
-      admin.vm.provision "shell", inline: "echo 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main' >> /etc/apt/sources.list"
+      admin.vm.provision "shell", inline: "echo 'deb http://#{DEFAULT_GATEWAY}:8080/ubuntu trusty main' > /etc/apt/sources.list"
+      admin.vm.provision "shell", inline: "echo 'deb http://#{DEFAULT_GATEWAY}:8080/debian jessie main' >> /etc/apt/sources.list"
       admin.vm.provision "shell", inline: "apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367"
       admin.vm.provision "shell", inline: "apt-get update && apt-get install -yq ansible"
   end
