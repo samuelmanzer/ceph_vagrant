@@ -1,10 +1,17 @@
 ---
-- name: SSH host key verification
-  hosts: all_ceph_nodes
+- hosts: admin_node
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Initialize admin node with all host keys
+      local_action: shell ssh-keyscan {{ " ".join(groups['all_ceph_nodes']) }} >> /etc/ssh/ssh_known_hosts
+
+- hosts: all_ceph_nodes
   remote_user: vagrant
   become: yes
+  gather_facts: no
   tasks:
-    - name: pre-emptive host key verification for SSH
+    - name: Gather all SSH host keys on all machines
       shell: ssh-keyscan {{ " ".join(groups['all_ceph_nodes']) }} >> /etc/ssh/ssh_known_hosts
 
 - name: admin root user tasks
@@ -20,7 +27,6 @@
       apt_key:
         url: "https://download.ceph.com/keys/release.asc"
         state: present
-      #shell: wget -q -O-  | apt-key add -
     - name: 'add ceph apt repo'
       apt_repository:
         repo: deb https://download.ceph.com/debian-jewel/ jessie main
