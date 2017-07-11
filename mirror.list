@@ -17,4 +17,4 @@ set _tilde 0
 ############# end config ##############
 deb http://httpredir.debian.org/debian jessie main
 deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
-deb https://download.ceph.com/debian-jewel/ jessie main
+deb http://download.ceph.com/debian-jewel jessie main
