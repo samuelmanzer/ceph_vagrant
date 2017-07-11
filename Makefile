@@ -1,4 +1,14 @@
 .PHONY: up load provision clean reload sync
+.PHONY: mirror
+
+# APT mirror used to make vagrant provisioning faster
+mirror:
+	docker run -d \
+		   -v /mirror:/var/spool/apt-mirror \
+		   -v `pwd`/mirror.list:/etc/apt/mirror.list \
+		   -p 8080:80 \
+		   --restart=always \
+		   seterrychen/apt-mirror-http-server
 
 up:
 	ssh-add ~/.vagrant.d/insecure_private_key
