@@ -1,4 +1,6 @@
-############# config: THIS SECTION UNMODIFIED FROM DEFAULTS ##################
+# This mirror.list used to run local apt mirror to speed up vagrant
+# provisioning
+####### config: THIS SECTION UNMODIFIED FROM DEFAULTS #######
 #
 # set base_path    /var/spool/apt-mirror
 #
