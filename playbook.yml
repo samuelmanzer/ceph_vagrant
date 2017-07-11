@@ -37,3 +37,10 @@
       command: ceph-deploy new {{ " ".join(groups['all_ceph_nodes']) }}
       args:
         chdir: /vagrant
+        creates: /vagrant/ceph.conf
+    - name: 'install ceph on other nodes'
+      command: ceph-deploy install {{ item }}
+      with_items:
+        - '{{ groups["all_ceph_nodes"] }}'
+      args:
+        chdir: /vagrant

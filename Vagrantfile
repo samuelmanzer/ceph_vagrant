@@ -5,7 +5,7 @@
 # https://github.com/carmstrong/multinode-ceph-vagrant
 
 CODENAME = "jessie"
-SERVER_COUNT = 3
+SERVER_COUNT = 4
 
 Vagrant.configure("2") do |config|
 
